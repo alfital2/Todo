@@ -13,7 +13,10 @@ input[type=text] ,input[type=date]{
   box-sizing: border-box;
 }
 
-
+section{
+  width: 100%;
+  max-width: 500px;
+}
 
 input[type=submit] {
   width: 100%;
