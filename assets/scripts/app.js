@@ -69,6 +69,11 @@ class TodoList{
     let getTaskHeadlines = document.getElementById(found.item["uid"]).children;
     getTaskHeadlines[0].style['text-decoration'] = 'line-through';
     getTaskHeadlines[1].style['text-decoration'] = 'line-through';
+    getTaskHeadlines[0].style['text-decoration-color'] = 'red';
+    getTaskHeadlines[1].style['text-decoration-color'] = 'red';
+    getTaskHeadlines[0].style['text-decoration-style'] = 'wavy';
+    getTaskHeadlines[1].style['text-decoration-style'] = 'wavy';
+    
     task.active=false;
     this.renderAllList();
   }
