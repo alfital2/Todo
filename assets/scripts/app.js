@@ -16,7 +16,7 @@ class TodoList{
     this.section.id = 'active-tasks';
     this.section.innerHTML=`
     <header>
-    <h2>active todo list</h2>
+    <h2>All todo list</h2>
     <button>Show active tasks only</button>
     </header>
     <ul></ul>`;
@@ -45,14 +45,6 @@ class TodoList{
     this.renderAllList();
   }
 
-  // toogleBetweenActiveTasksToNonActive(){
-  //   this.showActiveOnly = !this.showActiveOnly;
-  //   this.changeButtonToShowAllTasks();
-  //   let itemProperties=[...this.listOfTodo];
-  //   itemProperties = itemProperties.filter((task)=> !task.item.active);
-  //   this.render(itemProperties);
-  // }
-
   pushToDo(todo){
     this.listOfTodo.push(todo);
     this.render();
@@ -64,12 +56,16 @@ class TodoList{
     getTaskHeadlines[0].style['text-decoration'] = 'line-through';
     getTaskHeadlines[1].style['text-decoration'] = 'line-through';
     task.active=false;
+    this.renderAllList();
   }
 
   locateTaskById(task){
-    return this.listOfTodo.find(todo =>todo.item.uid ===task.uid );
+    return this.listOfTodo.find(todo =>todo.item.uid ===task.uid);
   }
 
+  toggleElementVisibility(element,mode){
+    document.getElementById(element.item["uid"]).style['display']=mode;
+  }
 
   renderAllList(){
     this.listOfTodo.map((todo) => {
@@ -77,10 +73,10 @@ class TodoList{
       {
         if (!todo.item.active)
         {
-          document.getElementById(todo.item["uid"]).style['display']='none';
+          this.toggleElementVisibility(todo,'none');
         }
       }else{
-        document.getElementById(todo.item["uid"]).style['display']='block';
+        this.toggleElementVisibility(todo,'block');
       }
     });
   }
@@ -88,9 +84,8 @@ class TodoList{
   render(){
     this.listOfTodo[this.listOfTodo.length-1].render();
   }
-
-
 }
+
 
 class TodoItem{
 
@@ -158,8 +153,6 @@ class TodoItem{
   const finishBtn = newEl.querySelector('button');
   finishBtn.addEventListener('click',()=>App.finishTodo(this.item));
   }
-
- 
 }
 
 
