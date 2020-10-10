@@ -1,5 +1,6 @@
 let p=console.log;
 
+const RENDER_ACTIVE_ONLY = true;
 
 class TodoList{
 
@@ -10,15 +11,25 @@ class TodoList{
     this.hookid = hook;
 
     const section = document.createElement('section');
-    section.id = 'active-projects';
+    section.id = 'active-tasks';
     section.innerHTML=`
     <header>
     <h2>active todo list</h2>
+    <button>Show active tasks only</button>
     </header>
     <ul></ul>`;
+
     const container = document.getElementById(this.hookid);
     container.append(section);
+    const onlyActiveBtn = container.querySelector('button');
+    onlyActiveBtn.addEventListener('click',()=>this.removeNonActiveTasks());
+  }
 
+  removeNonActiveTasks(){
+    let itemProperties=[...this.listOfTodo];
+    itemProperties = itemProperties.filter((task)=> !task.item.active);
+    p(itemProperties.length)
+    this.render(itemProperties,RENDER_ACTIVE_ONLY);
   }
 
   pushToDo(todo){
@@ -31,14 +42,22 @@ class TodoList{
     let getTaskHeadlines = document.getElementById(found.item["uid"]).children;
     getTaskHeadlines[0].style['text-decoration'] = 'line-through';
     getTaskHeadlines[1].style['text-decoration'] = 'line-through';
-
+    task.active=false;
   }
 
   locateTaskById(task){
     return this.listOfTodo.find(todo =>todo.item.uid ===task.uid );
   }
 
-  render(){
+  render(list,renderActiveOnly=false){
+     if(renderActiveOnly){
+      list.map((todo) => {
+        const unorderedListOftasks =document.getElementById(todo.item["uid"]);
+        if(unorderedListOftasks)
+          unorderedListOftasks.parentNode.removeChild(unorderedListOftasks);
+      });
+      return;
+    }
     this.listOfTodo[this.listOfTodo.length-1].render();
   }
 
@@ -109,8 +128,8 @@ class TodoItem{
           <button>Finish</button>
   `;
   unorderedListOftasks.append(newEl);
-  const tryrtyrty = newEl.querySelector('button');
-  tryrtyrty.addEventListener('click',()=>App.finishTodo(this.item));
+  const finishBtn = newEl.querySelector('button');
+  finishBtn.addEventListener('click',()=>App.finishTodo(this.item));
   }
 
  
@@ -191,7 +210,7 @@ class App {
   }
 
   static pushNewElement(task){
-    const newItem = new TodoItem('active-projects',task);
+    const newItem = new TodoItem('active-tasks',task);
     this.todoList.pushToDo(newItem);
   }
 

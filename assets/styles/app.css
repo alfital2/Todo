@@ -1,3 +1,6 @@
+body{
+  font-family: Arial, Helvetica, sans-serif;
+}
 
 #main-header h1 {
   color: white;
@@ -12,15 +15,15 @@
   background: #2c9bbd;
 }
 
-#active-projects {
+#active-tasks {
   float: left; 
   padding-left: 5px;
   width: 65%;
   min-width: 300px;
-  height: 500px;
+  
 }
 
-#active-projects > header {
+#active-tasks > header {
   background: #54c4f0;
   padding: 1rem;
   margin: 5px;
@@ -29,11 +32,32 @@
   align-items: center;
 }
 
-#active-projects header h2 {
+#active-tasks header h2 {
   color: white;
   margin: 0;
 }
 
+
+button {
+  font: inherit;
+  background: #54c4f0;
+  color: white;
+  border: 1px solid #54c4f0;
+  cursor: pointer;
+}
+
+
+
+button:focus {
+  outline: none;
+}
+
+button:hover,
+button:active {
+  background: #54c4f0;
+  border-color: #54c4f0;
+  color: white;
+}
 
 input[type=text] ,input[type=date]{
   width: 100%;
