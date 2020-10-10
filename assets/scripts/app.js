@@ -1,18 +1,20 @@
 let p=console.log;
 
 const RENDER_ACTIVE_ONLY = true;
+const UNIQUE_ID_FORMAT = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
 
 class TodoList{
 
   hookid;
   listOfTodo=[];
+  showActiveOnly = false;
+  section;
 
   constructor(hook){
     this.hookid = hook;
-
-    const section = document.createElement('section');
-    section.id = 'active-tasks';
-    section.innerHTML=`
+    this.section = document.createElement('section');
+    this.section.id = 'active-tasks';
+    this.section.innerHTML=`
     <header>
     <h2>active todo list</h2>
     <button>Show active tasks only</button>
@@ -20,17 +22,36 @@ class TodoList{
     <ul></ul>`;
 
     const container = document.getElementById(this.hookid);
-    container.append(section);
+    container.append(this.section);
     const onlyActiveBtn = container.querySelector('button');
-    onlyActiveBtn.addEventListener('click',()=>this.removeNonActiveTasks());
+    onlyActiveBtn.addEventListener('click',()=>this.toogleBetweenActiveTasksToNonActive()); 
   }
 
-  removeNonActiveTasks(){
-    let itemProperties=[...this.listOfTodo];
-    itemProperties = itemProperties.filter((task)=> !task.item.active);
-    p(itemProperties.length)
-    this.render(itemProperties,RENDER_ACTIVE_ONLY);
+  setButtonToShowAllTasks(){
+    this.section.querySelector('button').innerText = "Show all tasks";
   }
+
+  setButtonToShowOnlyActiveTasks(){
+    this.section.querySelector('button').innerText = "Show active tasks only";
+  }
+
+  toogleBetweenActiveTasksToNonActive(){
+    this.showActiveOnly = !this.showActiveOnly;
+
+    if(this.showActiveOnly)
+      this.setButtonToShowAllTasks();
+    else
+      this.setButtonToShowOnlyActiveTasks();
+    this.renderAllList();
+  }
+
+  // toogleBetweenActiveTasksToNonActive(){
+  //   this.showActiveOnly = !this.showActiveOnly;
+  //   this.changeButtonToShowAllTasks();
+  //   let itemProperties=[...this.listOfTodo];
+  //   itemProperties = itemProperties.filter((task)=> !task.item.active);
+  //   this.render(itemProperties);
+  // }
 
   pushToDo(todo){
     this.listOfTodo.push(todo);
@@ -49,15 +70,22 @@ class TodoList{
     return this.listOfTodo.find(todo =>todo.item.uid ===task.uid );
   }
 
-  render(list,renderActiveOnly=false){
-     if(renderActiveOnly){
-      list.map((todo) => {
-        const unorderedListOftasks =document.getElementById(todo.item["uid"]);
-        if(unorderedListOftasks)
-          unorderedListOftasks.parentNode.removeChild(unorderedListOftasks);
-      });
-      return;
-    }
+
+  renderAllList(){
+    this.listOfTodo.map((todo) => {
+      if (this.showActiveOnly)
+      {
+        if (!todo.item.active)
+        {
+          document.getElementById(todo.item["uid"]).style['display']='none';
+        }
+      }else{
+        document.getElementById(todo.item["uid"]).style['display']='block';
+      }
+    });
+  }
+
+  render(){
     this.listOfTodo[this.listOfTodo.length-1].render();
   }
 
@@ -88,7 +116,6 @@ class TodoItem{
   setTaskAsActive(){
     const itemProperties={...this.item};
     itemProperties['active'] = true;
-    p(itemProperties);
     return itemProperties;
   }
 
@@ -108,7 +135,7 @@ class TodoItem{
 
   createUniqueIdForTask(){
     let dt = new Date().getTime();
-    let uniqueId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) =>{
+    let uniqueId = UNIQUE_ID_FORMAT.replace(/[xy]/g, (c) =>{
       let remainder = (dt + Math.random()*16)%16 | 0;
       dt = Math.floor(dt/16);
         return (c=='x' ? remainder :(remainder&0x3|0x8)).toString(16);
