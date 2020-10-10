@@ -1,17 +1,61 @@
 let p=console.log;
+
+
 class TodoList{
+
+  hookid;
+  listOfTodo=[];
+
+  constructor(hook){
+    this.hookid = hook;
+
+    const section = document.createElement('section');
+    section.id = 'active-projects';
+    section.innerHTML=`
+    <header>
+    <h2>active todo list</h2>
+    </header>
+    <ul></ul>`;
+    const container = document.getElementById(this.hookid);
+    container.append(section);
+
+  }
+
+  pushToDo(todo){
+    this.listOfTodo.push(todo);
+    this.render();
+  }
+
+  markAsFinished(task){
+    const found = this.locateTaskById(task)
+    let getTaskHeadlines = document.getElementById(found.item["uid"]).children;
+    getTaskHeadlines[0].style['text-decoration'] = 'line-through';
+    getTaskHeadlines[1].style['text-decoration'] = 'line-through';
+
+  }
+
+  locateTaskById(task){
+    return this.listOfTodo.find(todo =>todo.item.uid ===task.uid );
+  }
+
+  render(){
+    this.listOfTodo[this.listOfTodo.length-1].render();
+  }
+
 
 }
 
 class TodoItem{
 
-constructor(hook,task){
-  this.hookid=hook;
-  this.item = this.extractDateFromTaskObject(task);
-  this.verifyIfDateIsSet();
-  const uidForTask = this.createUniqueIdForTask();
-  this.item = this.setIdForTask(uidForTask);
-  this.render();
+  hookid;
+
+  constructor(hook,task){
+    this.hookid=hook;
+    this.item = this.extractDateFromTaskObject(task);
+    this.verifyIfDateIsSet();
+    const uidForTask = this.createUniqueIdForTask();
+    this.item = this.setIdForTask(uidForTask);
+    this.item = this.setTaskAsActive();
   }
   
   verifyIfDateIsSet(){
@@ -22,6 +66,13 @@ constructor(hook,task){
     }
   }
 
+  setTaskAsActive(){
+    const itemProperties={...this.item};
+    itemProperties['active'] = true;
+    p(itemProperties);
+    return itemProperties;
+  }
+
   setIdForTask(id){
     const itemProperties={...this.item};
     itemProperties['uid'] = id;
@@ -29,7 +80,6 @@ constructor(hook,task){
   }
   
   extractDateFromTaskObject(task){
-
     const itemProperties={...task};
     Object.keys(itemProperties).map(function(key, value) {
       itemProperties[key] = itemProperties[key].value;
@@ -50,18 +100,20 @@ constructor(hook,task){
   render(){
     const unorderedListOftasks = document.querySelector('ul');
     const newEl = document.createElement('li');
+    newEl.id = this.item["uid"];
     newEl.className="card";
     newEl.innerHTML=`
-
           <h2>${this.item["taskName"]}</h2>
           <p>${this.item["taskInfo"]}.</p>
           <h3>${this.item["taskDate"]}</h3>
-          <h4>${this.item["uid"]}</h4>
-          <button>Finish</button
-
+          <button>Finish</button>
   `;
   unorderedListOftasks.append(newEl);
+  const tryrtyrty = newEl.querySelector('button');
+  tryrtyrty.addEventListener('click',()=>App.finishTodo(this.item));
   }
+
+ 
 }
 
 
@@ -110,6 +162,7 @@ initializeElements(){
 
 render(){
   const form = document.createElement('section');
+  form.id="inputData";
   form.setAttribute("onclick",()=>alert('added'));
   const container = document.getElementById(this.hookid);
   for (const field in this.inputElements)
@@ -133,18 +186,17 @@ class App {
     wrapper.id ="wrapper";
     app.append(wrapper);
 
-
-    ///TODO DELETE
-    const TEST_DELETE = document.createElement('ul');
-    app.append(TEST_DELETE);
-    ///TODO DELETE
-
     new InputTask('wrapper');
+    this.todoList = new TodoList('wrapper');
   }
 
   static pushNewElement(task){
+    const newItem = new TodoItem('active-projects',task);
+    this.todoList.pushToDo(newItem);
+  }
 
-    const newItem = new TodoItem('ul',task);
+  static finishTodo(task){
+    this.todoList.markAsFinished(task);
 
   }
 }
