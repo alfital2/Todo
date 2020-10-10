@@ -5,7 +5,7 @@ const UNIQUE_ID_FORMAT = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
 const SHOW_ALL_TASKS = "Show all tasks";
 const SHOW_ACTIVE_TASKS_ONLY = "Show active tasks only";
 const HEADLINE_ALL_TASKS = "All Tasks list";
-const HEADLINE_ACTIVE_ONLY_TASKS = "Active tasks";
+const HEADLINE_ACTIVE_ONLY_TASKS = "Active Tasks";
 const NO_DATE_MESSAGE = "No expiration date"
 
 class TodoList{
@@ -64,15 +64,22 @@ class TodoList{
     this.render();
   }
 
+  setStyleForFinishedTasks(taskElements){
+    const headline = taskElements[0];
+    const paragraph = taskElements[1];
+    headline.style['text-decoration'] = 'line-through';
+    headline.style['text-decoration-color'] = 'red';
+    headline.style['text-decoration-style'] = 'wavy';
+    paragraph.style['text-decoration'] = 'line-through';
+    paragraph.style['text-decoration-color'] = 'red';
+    paragraph.style['text-decoration-style'] = 'wavy';
+  }
+
   markAsFinished(task){
     const found = this.locateTaskById(task)
-    let getTaskHeadlines = document.getElementById(found.item["uid"]).children;
-    getTaskHeadlines[0].style['text-decoration'] = 'line-through';
-    getTaskHeadlines[1].style['text-decoration'] = 'line-through';
-    getTaskHeadlines[0].style['text-decoration-color'] = 'red';
-    getTaskHeadlines[1].style['text-decoration-color'] = 'red';
-    getTaskHeadlines[0].style['text-decoration-style'] = 'wavy';
-    getTaskHeadlines[1].style['text-decoration-style'] = 'wavy';
+    let taskElements = document.getElementById(found.item["uid"]).children;
+    this.setStyleForFinishedTasks(taskElements)
+
     
     task.active=false;
     this.renderAllList();
