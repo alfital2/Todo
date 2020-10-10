@@ -2,6 +2,10 @@ let p=console.log;
 
 const RENDER_ACTIVE_ONLY = true;
 const UNIQUE_ID_FORMAT = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+const SHOW_ALL_TASKS = "Show all tasks";
+const SHOW_ACTIVE_TASKS_ONLY = "Show active tasks only";
+const HEADLINE_ALL_TASKS = "All Tasks list";
+const HEADLINE_ACTIVE_ONLY_TASKS = "Active tasks";
 
 class TodoList{
 
@@ -16,7 +20,7 @@ class TodoList{
     this.section.id = 'active-tasks';
     this.section.innerHTML=`
     <header>
-    <h2>All todo list</h2>
+    <h2>${HEADLINE_ALL_TASKS}</h2>
     <button>Show active tasks only</button>
     </header>
     <ul></ul>`;
@@ -28,20 +32,29 @@ class TodoList{
   }
 
   setButtonToShowAllTasks(){
-    this.section.querySelector('button').innerText = "Show all tasks";
+    this.section.querySelector('button').innerText = SHOW_ALL_TASKS;
   }
 
   setButtonToShowOnlyActiveTasks(){
-    this.section.querySelector('button').innerText = "Show active tasks only";
+    this.section.querySelector('button').innerText = SHOW_ACTIVE_TASKS_ONLY;
+  }
+
+  changeHeadlineDescription(){
+    const element = this.section.querySelector('h2');
+
+    if(this.showActiveOnly)
+      element.innerText=HEADLINE_ACTIVE_ONLY_TASKS;
+    else
+    element.innerText= HEADLINE_ALL_TASKS;
   }
 
   toogleBetweenActiveTasksToNonActive(){
     this.showActiveOnly = !this.showActiveOnly;
-
     if(this.showActiveOnly)
       this.setButtonToShowAllTasks();
     else
       this.setButtonToShowOnlyActiveTasks();
+    this.changeHeadlineDescription();
     this.renderAllList();
   }
 
@@ -189,14 +202,6 @@ initializeElements(){
   this.inputElements['taskInfo'].setAttribute("type", "text");
   this.inputElements['taskInfo'].placeholder="task info(optional)";
   this.inputElements['taskDate'].setAttribute("type", "date");
-
-
-  ////////this is for tasting - delete this!
-  this.inputElements['taskInfo'].value = "asfdsdfgsadfgsdf";
-  this.inputElements['taskName'].value = "asdasd";
-    ////////this is for tasting - delete this!
-
-
 }
 
 render(){
