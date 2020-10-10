@@ -6,6 +6,7 @@ const SHOW_ALL_TASKS = "Show all tasks";
 const SHOW_ACTIVE_TASKS_ONLY = "Show active tasks only";
 const HEADLINE_ALL_TASKS = "All Tasks list";
 const HEADLINE_ACTIVE_ONLY_TASKS = "Active tasks";
+const NO_DATE_MESSAGE = "No expiration date"
 
 class TodoList{
 
@@ -116,7 +117,7 @@ class TodoItem{
   verifyIfDateIsSet(){
     if(this.item['taskDate']==''){
     const itemProperties={...this.item};
-      itemProperties['taskDate']="No expiration date";
+      itemProperties['taskDate']=NO_DATE_MESSAGE;
       this.item = itemProperties;
     }
   }
@@ -132,7 +133,7 @@ class TodoItem{
     itemProperties['uid'] = id;
     return itemProperties;
   }
-  
+
   extractDateFromTaskObject(task){
     const itemProperties={...task};
     Object.keys(itemProperties).map(function(key, value) {
@@ -158,9 +159,8 @@ class TodoItem{
     newEl.className="card";
     newEl.innerHTML=`
           <h2>${this.item["taskName"]}</h2>
-          <p>${this.item["taskInfo"]}.</p>
-          <h3>${this.item["taskDate"]}</h3>
-          <button>Finish</button>
+          <p>${this.item["taskInfo"]}</p>
+          <h5>${this.item["taskDate"]}<button>Finish</button></h5>
   `;
   unorderedListOftasks.append(newEl);
   const finishBtn = newEl.querySelector('button');
@@ -204,6 +204,14 @@ initializeElements(){
   this.inputElements['taskDate'].setAttribute("type", "date");
 }
 
+verifyFieldsBeforePushing(){
+  if(this.inputElements['taskName'].value ==='')
+    return alert("Please fill in the required fields");
+  App.pushNewElement(this.inputElements);
+}
+
+
+
 render(){
   const form = document.createElement('section');
   form.id="inputData";
@@ -213,7 +221,7 @@ render(){
     form.append(this.inputElements[field]);
   const submitBtn = document.createElement("INPUT");
   submitBtn.setAttribute("type", "submit");
-  submitBtn.addEventListener('click',()=>App.pushNewElement(this.inputElements));
+  submitBtn.addEventListener('click',()=>this.verifyFieldsBeforePushing());
   form.append(submitBtn);
   container.append(form)
   
@@ -229,7 +237,6 @@ class App {
     const wrapper = document.createElement('div');
     wrapper.id ="wrapper";
     app.append(wrapper);
-
     new InputTask('wrapper');
     this.todoList = new TodoList('wrapper');
   }

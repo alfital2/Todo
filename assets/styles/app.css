@@ -59,6 +59,10 @@ button:active {
   color: white;
 }
 
+h5 button{
+  float: right;
+}
+
 input[type=text] ,input[type=date]{
   width: 100%;
   padding: 12px 20px;
@@ -110,16 +114,16 @@ input[type=submit]:hover {
   margin: 1rem auto;
   max-width: 90%;
   background-color: white;
-  overflow: hidden; /* add this to contain floated children */
+  overflow: hidden; 
 }
 
 #inputData {
   width: 30%;
   min-width: 300px;
-  float:left; /* add this */
+  float:left;
 }
 
-h2 , h3 ,h4 , p ,ul{
+h2 , h3 ,h4 ,h5, p ,ul{
 
   word-wrap: break-word;
   margin-block-start: 0.05em;
