@@ -7,6 +7,8 @@ const SHOW_ACTIVE_TASKS_ONLY = "Show active tasks only";
 const HEADLINE_ALL_TASKS = "All Tasks list";
 const HEADLINE_ACTIVE_ONLY_TASKS = "Active Tasks";
 const NO_DATE_MESSAGE = "No expiration date"
+const DATE_ERROR_MESSAGE = "Cannot set date that passed"
+const REQUIRED_FIELD_ERROR="Please fill in the required fields";
 
 class TodoList{
 
@@ -216,9 +218,40 @@ initializeElements(){
   this.inputElements['taskDate'].setAttribute("type", "date");
 }
 
+
+compareYears(userDate,currentDate){
+  return userDate[2] < currentDate[2];
+}
+
+compareYearsAndMonth(userDate,currentDate){
+  return userDate[2] == currentDate[2] && userDate[1] < currentDate[1];
+}
+
+compareYearsMonthAndDays(userDate,currentDate){
+  return userDate[2] == currentDate[2] && userDate[1] == currentDate[1] && userDate[0] < currentDate[0];
+}
+
+
+checkIfDateDidntPassed(){
+  let userDate,currentDate;
+  userDate = this.inputElements['taskDate'].value
+
+  if(userDate=='') //user didn't put any date
+    return false;
+
+  userDate = userDate.split("-").reverse();
+  currentDate = (new Date()).toLocaleDateString('en-GB').split('/');
+
+  return (this.compareYears(userDate,currentDate) || 
+         this.compareYearsAndMonth(userDate,currentDate) ||
+         this.compareYearsMonthAndDays(userDate,currentDate));
+}
+
 verifyFieldsBeforePushing(){
   if(this.inputElements['taskName'].value ==='')
-    return alert("Please fill in the required fields");
+    return alert(REQUIRED_FIELD_ERROR);
+  if (this.checkIfDateDidntPassed())
+    return alert(DATE_ERROR_MESSAGE);
   App.pushNewElement(this.inputElements);
 }
 
